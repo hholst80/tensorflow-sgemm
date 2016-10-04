@@ -5,7 +5,9 @@ import openblas  # noqa
 sess = tf.InteractiveSession(config=tf.ConfigProto(
     inter_op_parallelism_threads=1, intra_op_parallelism_threads=1))
 
-os.environ['OMP_NUM_THREADS'] = '1'
+if 'OMP_NUM_THREADS' not in os.environ or \
+   int(os.environ['OMP_NUM_THREADS']) > 1:
+    print("WARNING: Using multicore BLAS. Was this intended?")
 
 for N in [1000, 2000, 3000, 4000, 5000]:
     prev_delta = None
