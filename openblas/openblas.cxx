@@ -34,7 +34,7 @@ Status MatMulShape(shape_inference::InferenceContext* c) {
 }
 
 
-REGISTER_OP("SGEMMOp")
+REGISTER_OP("SGEMM")
 	.Attr("transpose_a: bool = False")
 	.Attr("transpose_b: bool = False")
     .Input("a: float32")
@@ -100,4 +100,4 @@ private:
   bool transb_;
 };
 
-REGISTER_KERNEL_BUILDER(Name("SGEMMOp").Device(DEVICE_CPU), SGEMMOp);
+REGISTER_KERNEL_BUILDER(Name("SGEMM").Device(DEVICE_CPU), SGEMMOp);

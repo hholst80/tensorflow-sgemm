@@ -9,7 +9,7 @@ os.environ['OMP_NUM_THREADS'] = '1'
 
 for N in [1000, 2000, 3000, 4000, 5000]:
     prev_delta = None
-    for matmul in [tf.matmul, openblas.sgemm_op]:
+    for matmul in [tf.matmul, openblas.sgemm]:
         print('{name} {size}'.format(name=matmul.__name__, size=N))
 
         A = tf.Variable(initial_value=tf.random_uniform([N, N]))

@@ -1,19 +1,19 @@
 import tensorflow as tf
 
 openblas_library = tf.load_op_library('./openblas/openblas.so')
-sgemm_op = openblas_library.sgemm_op
+sgemm = openblas_library.sgemm
 
-@tf.RegisterGradient("SGEMMOp")
+@tf.RegisterGradient("SGEMM")
 def _sgemm_grad(op, grad):
-    """The gradients for `sgemm_op`.
+    """The gradients for `sgemm`.
 
     Args:
-      op: The `sgemm_op` `Operation` that we are differentiating, which we can
+      op: The `sgemm` `Operation` that we are differentiating, which we can
           use to find the inputs and outputs of the original op.
-      grad: Gradient with respect to the output of the `sgemm_op` op.
+      grad: Gradient with respect to the output of the `sgemm` op.
 
     Returns:
-      Gradients with respect to the input of `sgemm_op`.
+      Gradients with respect to the input of `sgemm`.
 
     NOTE: See `tensorflow/python/ops/math_grad.py`.
     """
@@ -21,16 +21,16 @@ def _sgemm_grad(op, grad):
     transa = op.get_attr('transpose_a')
     transb = op.get_attr('transpose_b')
     return [
-        sgemm_op(b, grad, transpose_a=True) if transb else
-        sgemm_op(grad, b, transpose_b=True),
-        sgemm_op(grad, a, transpose_b=True) if transa else
-        sgemm_op(a, grad, transpose_a=True),
+        sgemm(b, grad, transpose_a=True) if transb else
+        sgemm(grad, b, transpose_b=True),
+        sgemm(grad, a, transpose_b=True) if transa else
+        sgemm(a, grad, transpose_a=True),
       ]
 
 # This has some kind of C++ implementation as well, how do they interop?
-@tf.RegisterShape("SGEMMOp")
+@tf.RegisterShape("SGEMM")
 def _sgemm_shape(op):
-  """Shape function for the `sgemm_op` `Operation`.
+  """Shape function for the `sgemm` `Operation`.
   """
   a, b = op.inputs
   transa = op.get_attr('transpose_a')
