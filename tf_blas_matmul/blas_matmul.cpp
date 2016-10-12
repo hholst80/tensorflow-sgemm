@@ -9,7 +9,7 @@
 
 using namespace tensorflow;
 
-Status MatMulShape(shape_inference::InferenceContext* c) {
+Status MatmulShape(shape_inference::InferenceContext* c) {
   using namespace shape_inference;
   ShapeHandle a;
   TF_RETURN_IF_ERROR(c->WithRank(c->input(0), 2, &a));
@@ -34,19 +34,19 @@ Status MatMulShape(shape_inference::InferenceContext* c) {
 }
 
 
-REGISTER_OP("SGEMM")
+REGISTER_OP("BLASMatmul")
 	.Attr("transpose_a: bool = False")
 	.Attr("transpose_b: bool = False")
     .Input("a: float32")
     .Input("b: float32")
     .Output("c: float32")
-    .SetShapeFn(MatMulShape);
+    .SetShapeFn(MatmulShape);
 
 // Copy some stuff from here tensorflow/core/kernels/matmul_op.cc
 
-class SGEMMOp : public OpKernel {
+class BLASMatmulOp : public OpKernel {
  public:
-  explicit SGEMMOp(OpKernelConstruction* context) : OpKernel(context) {
+  explicit BLASMatmulOp(OpKernelConstruction* context) : OpKernel(context) {
 	  OP_REQUIRES_OK(context, context->GetAttr("transpose_a", &transa_));
 	  OP_REQUIRES_OK(context, context->GetAttr("transpose_b", &transb_));
   }
@@ -57,9 +57,9 @@ class SGEMMOp : public OpKernel {
     const Tensor& b_tensor = context->input(1);
 	
 	OP_REQUIRES(context, TensorShapeUtils::IsMatrix(a_tensor.shape()),
-			errors::InvalidArgument("SGEMM expects a 2-D matrix."));
+			errors::InvalidArgument("BLASMatmul expects a 2-D matrix."));
 	OP_REQUIRES(context, TensorShapeUtils::IsMatrix(b_tensor.shape()),
-			errors::InvalidArgument("SGEMM expects a 2-D matrix."));
+			errors::InvalidArgument("BLASMatmul expects a 2-D matrix."));
 
 	auto ma = a_tensor.shape().dim_size(0);
 	auto na = a_tensor.shape().dim_size(1);
@@ -70,7 +70,7 @@ class SGEMMOp : public OpKernel {
 	auto kc = transa_ ? ma : na;
 
 	OP_REQUIRES(context, transb_ ? kc == nb : kc == mb,
-		errors::InvalidArgument("SGEMM inner dimensions mismatch."))
+		errors::InvalidArgument("BLASMatmul inner dimensions mismatch."))
 
     // Create an output tensor
     Tensor* output_tensor = NULL;
@@ -100,4 +100,4 @@ private:
   bool transb_;
 };
 
-REGISTER_KERNEL_BUILDER(Name("SGEMM").Device(DEVICE_CPU), SGEMMOp);
+REGISTER_KERNEL_BUILDER(Name("BLASMatmul").Device(DEVICE_CPU), BLASMatmulOp);

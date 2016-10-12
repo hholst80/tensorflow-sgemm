@@ -1,7 +1,7 @@
 import os
 import timeit
 import tensorflow as tf
-import tf_sgemm  # noqa
+import tf_blas_matmul  # noqa
 sess = tf.InteractiveSession(config=tf.ConfigProto(
     inter_op_parallelism_threads=1, intra_op_parallelism_threads=1))
 
@@ -11,7 +11,7 @@ if 'OMP_NUM_THREADS' not in os.environ or \
 
 for N in [1000, 2000, 3000, 4000, 5000]:
     prev_delta = None
-    for matmul in [tf.matmul, tf_sgemm.sgemm]:
+    for matmul in [tf.matmul, tf_blas_matmul.blas_matmul]:
         print('{name} {size}'.format(name=matmul.__name__, size=N))
 
         A = tf.Variable(initial_value=tf.random_uniform([N, N]))
