@@ -4,7 +4,7 @@ Building (on Ubuntu 16.04 LTS)
 
     $ sudo apt install libopenblas-dev
 
-Build the binary library `openblas/openblas.so`
+Build the binary library `tf_blas_matmul/blas_matmul.so`
 
     $ make
 
