@@ -1,10 +1,10 @@
 import tensorflow as tf
-import openblas
+import tf_sgemm
 sess = tf.InteractiveSession()
 
 a = tf.convert_to_tensor([[1.0, 2.0], [3.0, 4.0]])
 b = tf.convert_to_tensor([[5.0, 6.0], [7.0, 8.0]])
-matmul = openblas.sgemm
+matmul = tf_sgemm.sgemm
 c = matmul(a, b)
 print(c.eval(), 'expected value: [[19., 22.], [43., 50.]]')
 a = tf.convert_to_tensor([[1.0, 2.0]])

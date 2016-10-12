@@ -1,6 +1,8 @@
+import os
 import tensorflow as tf
 
-openblas_library = tf.load_op_library('./openblas/openblas.so')
+library_path = os.path.join(os.path.dirname(__file__), 'openblas.so')
+openblas_library = tf.load_op_library(library_path)
 sgemm = openblas_library.sgemm
 
 @tf.RegisterGradient("SGEMM")

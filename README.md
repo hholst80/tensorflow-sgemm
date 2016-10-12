@@ -15,3 +15,7 @@ Basic test:
 Single thread performance test:
 
     $ env OMP_NUM_THREADS=1 python perftest.py
+
+Install PIP repo
+
+    $ pip install -e .
