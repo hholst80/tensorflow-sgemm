@@ -1,16 +1,14 @@
-#include "tensorflow/core/framework/op_kernel.h"
-
-#include "tensorflow/core/framework/op.h"
-#include "tensorflow/core/framework/shape_inference.h"
-
-#include <iostream>
 #include <cblas.h>
-#include <cstdio>
+
+#include "tensorflow/core/framework/op_kernel.h"
+#include "tensorflow/core/framework/shape_inference.h"
 
 using namespace tensorflow;
 
+typedef const shape_inference::Shape * ShapeHandle;
+typedef const shape_inference::Dimension * DimensionHandle;
+
 Status MatmulShape(shape_inference::InferenceContext* c) {
-  using namespace shape_inference;
   ShapeHandle a;
   TF_RETURN_IF_ERROR(c->WithRank(c->input(0), 2, &a));
 
